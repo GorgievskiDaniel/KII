@@ -1,4 +1,4 @@
-package com.company.project.entity;
+package com.gorgievskidaniel.kii.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,7 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 
 @Entity
-@Table(name = "greetings")
+@Table(name = "messages")
 public class Greeting {
 
     @Id

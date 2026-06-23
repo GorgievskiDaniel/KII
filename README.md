@@ -83,3 +83,105 @@ Removing react-java-mysql-frontend-1 ... done
 Removing react-java-mysql-db-1       ... done
 Removing network react-java-mysql-default
 ```
+
+## CI/CD with GitHub Actions
+This repository now includes a GitHub Actions workflow at `.github/workflows/ci-cd.yml`.
+
+The workflow performs the following steps:
+- build the Java backend with Maven
+- build the React frontend with npm
+- build and push the backend and frontend Docker images to GitHub Container Registry (`ghcr.io`)
+- optionally deploy the Kubernetes manifests from `k8s/` when the secret `KUBE_CONFIG_DATA` is configured
+
+### GitHub Actions setup
+1. Enable GitHub Container Registry for the repository.
+2. Add the repository secret `KUBE_CONFIG_DATA` if you want deployment to Kubernetes from GitHub Actions.
+   - Store the kubeconfig file as base64, e.g. `base64 ~/.kube/config | pbcopy`.
+
+### Image names
+The workflow builds and pushes the following images:
+- `ghcr.io/<GITHUB_USERNAME>/kii-proekt-backend:latest`
+- `ghcr.io/<GITHUB_USERNAME>/kii-proekt-frontend:latest`
+
+Replace `<GITHUB_USERNAME>` with your GitHub username in the Kubernetes manifests before deploying.
+
+## Kubernetes manifests
+The `k8s/` directory contains manifests for deploying the app into its own namespace.
+
+Included files:
+- `namespace.yaml`
+- `backend-configmap.yaml`
+- `backend-secret.yaml`
+- `db-service.yaml`
+- `db-statefulset.yaml`
+- `backend-deployment.yaml`
+- `backend-service.yaml`
+- `frontend-deployment.yaml`
+- `frontend-service.yaml`
+- `ingress.yaml`
+
+### Deploy to Kubernetes
+After configuring `kubectl` for your cluster, apply the manifests:
+
+```bash
+kubectl apply -f k8s/
+```
+
+To delete the deployment later:
+
+```bash
+kubectl delete -f k8s/
+```
+
+### Notes for Kubernetes deployment
+- Use `ghcr.io/<GITHUB_USERNAME>/kii-proekt-backend:latest` and `ghcr.io/<GITHUB_USERNAME>/kii-proekt-frontend:latest` in `k8s/*-deployment.yaml`.
+- The `frontend` image includes a custom Nginx proxy so `/api` requests are forwarded to the backend service.
+- The database is deployed as a `StatefulSet` with a persistent volume claim.
+
+## Project deliverables covered
+- Dockerized app and database
+- Docker Compose orchestration
+- GitHub Actions CI/CD pipeline
+- Kubernetes manifests: `Deployment`, `Service`, `Ingress`, `StatefulSet`, `ConfigMap`, and `Secret`
+- Namespace deployment in a separate Kubernetes namespace
+
+## CI/CD with GitHub Actions
+This repository now includes a GitHub Actions workflow at `.github/workflows/ci-cd.yml`.
+
+The workflow performs the following steps:
+- validates the Java backend build with Maven
+- validates the React frontend build with npm
+- builds the backend and frontend Docker images
+- pushes the images to GitHub Container Registry (`ghcr.io`)
+- optionally deploys the Kubernetes manifests if `KUBE_CONFIG_DATA` is configured
+
+### GitHub Actions setup
+1. Enable GitHub Packages / GitHub Container Registry for the repository.
+2. Add `KUBE_CONFIG_DATA` as a repository secret if you want automated deployment to your Kubernetes cluster.
+   - store the kubeconfig file as base64, e.g. `base64 ~/.kube/config | pbcopy`
+
+## Kubernetes manifests
+The `k8s/` directory contains manifests for deploying the application in its own namespace:
+- `namespace.yaml`
+- `backend-configmap.yaml`
+- `backend-secret.yaml`
+- `db-statefulset.yaml`
+- `db-service.yaml`
+- `backend-deployment.yaml`
+- `frontend-deployment.yaml`
+- `backend-service.yaml`
+- `frontend-service.yaml`
+- `ingress.yaml`
+
+### Deploy to Kubernetes
+Run the following command after you have configured `kubectl` for your cluster:
+
+```bash
+kubectl apply -f k8s/
+```
+
+If you need to delete the deployment later:
+
+```bash
+kubectl delete -f k8s/
+```

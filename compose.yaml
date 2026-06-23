@@ -1,58 +1,55 @@
 services:
-  backend:
-    build: backend
-    restart: always
-    secrets:
-      - db-password
-    environment:
-      MYSQL_HOST: db
-    networks:
-      - react-spring
-      - spring-mysql
-    depends_on:
-      db:
-        condition: service_healthy
-  db:
-    # We use a mariadb image which supports both amd64 & arm64 architecture
-    image: mariadb:10.6.4-focal
-    # If you really want to use MySQL, uncomment the following line
-    #image: mysql:8.0.19
-    environment:
-      - MYSQL_DATABASE=example
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
-    restart: always
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
-      interval: 3s
-      retries: 5
-      start_period: 30s
-    secrets:
-      - db-password
-    volumes:
-      - db-data:/var/lib/mysql
-    networks:
-      - spring-mysql
   frontend:
     build:
       context: frontend
-      target: development
     ports:
-      - 3000:3000
-    volumes:
-      - ./frontend/src:/code/src
-      - /project/node_modules
-    networks:
-      - react-spring
+      - "8081:80"          # nginx внатре слуша 80, не 3000 dev сервер
     depends_on:
       - backend
-    expose:
-      - 3306
-      - 33060
+    networks:
+      - kii-net
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: backend
+    environment:
+      MYSQL_HOST: db
+    secrets:
+      - db-password
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - kii-net
+      - db-net
+    restart: unless-stopped
+
+  db:
+    image: mariadb:11.4
+    environment:
+      MYSQL_DATABASE: kii_app_db
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db-password
+    secrets:
+      - db-password
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - db-net
+    restart: unless-stopped
+
 volumes:
   db-data: {}
+
 secrets:
   db-password:
-    file: db/password.txt
+    file: ./db/password.txt
+
 networks:
-  react-spring: {}
-  spring-mysql: {}
+  kii-net: {}
+  db-net: {}

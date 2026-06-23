@@ -20,7 +20,6 @@ useradd -s /bin/bash -m vscode
 groupadd docker
 usermod -aG docker vscode
 EOF
-# install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
 CMD ["mvn", "spring-boot:run"]
 
@@ -30,11 +29,15 @@ WORKDIR /workdir/server/target/dependency
 RUN jar -xf ../*.jar
 
 FROM eclipse-temurin:17-jre-focal
-
+RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
+RUN useradd -ms /bin/bash appuser
+USER appuser
 EXPOSE 8080
 VOLUME /tmp
 ARG DEPENDENCY=/workdir/server/target/dependency
 COPY --from=prepare-production ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=prepare-production ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=prepare-production ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.company.project.Application"]
+HEALTHCHECK --interval=10s --timeout=3s --retries=5 \
+  CMD wget -qO- http://localhost:8080/actuator/health || exit 1
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.gorgievskidaniel.kii.Application"]
