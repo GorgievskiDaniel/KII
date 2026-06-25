@@ -13,9 +13,12 @@ spec:
       labels:
         app: backend
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: backend
-          image: ghcr.io/<GITHUB_USERNAME>/kii-proekt-backend:latest
+          image: ghcr.io/gorgievskidaniel/kii-proekt-backend:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:

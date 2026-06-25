@@ -13,9 +13,12 @@ spec:
       labels:
         app: frontend
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: frontend
-          image: ghcr.io/<GITHUB_USERNAME>/kii-proekt-frontend:latest
+          image: ghcr.io/gorgievskidaniel/kii-proekt-frontend:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           env:
