@@ -4,7 +4,7 @@ metadata:
   name: backend-config
   namespace: kii-proekt
 data:
-  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/example
+  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/kii_app_db
   SPRING_DATASOURCE_USERNAME: root
   SPRING_JPA_HIBERNATE_DDL_AUTO: none
   SPRING_JPA_SHOW_SQL: "true"
