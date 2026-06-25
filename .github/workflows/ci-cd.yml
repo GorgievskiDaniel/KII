@@ -36,22 +36,22 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/kii-proekt-frontend:latest
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+  # deploy:
+  #   needs: build-and-push
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
+  #     - name: Set up kubectl
+  #       uses: azure/setup-kubectl@v3
+  #       with:
+  #         version: 'latest'
 
-      - name: Configure kubeconfig
-        run: |
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > kubeconfig
+  #     - name: Configure kubeconfig
+  #       run: |
+  #         echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > kubeconfig
 
-      - name: Deploy Kubernetes manifests
-        run: |
-          KUBECONFIG=kubeconfig kubectl apply -f k8s/
+  #     - name: Deploy Kubernetes manifests
+  #       run: |
+  #         KUBECONFIG=kubeconfig kubectl apply -f k8s/
