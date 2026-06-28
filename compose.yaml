@@ -33,7 +33,7 @@ services:
     secrets:
       - db-password
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "127.0.0.1", "--silent"]
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 --silent --user=root --password=$(cat /run/secrets/db-password)"]
       interval: 5s
       retries: 5
       start_period: 30s
