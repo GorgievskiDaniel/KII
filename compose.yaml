@@ -3,7 +3,7 @@ services:
     build:
       context: frontend
     ports:
-      - "8081:80"          # nginx внатре слуша 80, не 3000 dev сервер
+      - "8081:80"          
     depends_on:
       - backend
     networks:

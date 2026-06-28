@@ -14,23 +14,73 @@
 .tasks { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 14px; }
 .tasks li { background: #111827; border: 1px solid #334155; border-radius: 18px; padding: 20px; display: grid; grid-template-columns: 1.4fr 0.6fr; gap: 16px; align-items: center; }
 .tasks li.done { opacity: 0.68; }
+.tasks li.editing { grid-template-columns: 1fr; }
 .task-meta { text-align: left; }
 .task-title { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .task-title strong { font-size: 1.05rem; }
 .badge { display: inline-flex; padding: 6px 10px; border-radius: 999px; font-size: 0.78rem; letter-spacing: 0.02em; text-transform: uppercase; }
 .badge.open { background: #0f766e; color: #ccfbf1; }
 .badge.in_progress { background: #c2410c; color: #ffedd5; }
-.badge.done { background: #0f766e; color: #ccfbf1; }
+.badge.done { background: #166534; color: #bbf7d0; }
 .task-meta p { margin: 0; color: #cbd5e1; line-height: 1.6; }
 .task-times { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; color: #94a3b8; font-size: 0.92rem; }
 .actions { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
 .actions button { width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; }
 .actions button.delete { background: #dc2626; color: #fff; }
-.actions button:not(.delete) { background: #2563eb; color: #fff; }
+.actions button.edit { background: #7c3aed; color: #fff; }
+.actions button:not(.delete):not(.edit) { background: #2563eb; color: #fff; }
+.edit-form { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.edit-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.edit-row input,
+.edit-row select { flex: 1 1 180px; padding: 12px 14px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: #e2e8f0; }
+.edit-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.edit-actions button { padding: 10px 20px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; }
+.edit-actions .save { background: #16a34a; color: #fff; }
+.edit-actions .cancel { background: #475569; color: #fff; }
 .pagination { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 8px; }
 .pagination button { border: 1px solid #334155; background: #1e293b; color: #e2e8f0; padding: 10px 16px; border-radius: 12px; cursor: pointer; }
 .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
 .pagination span { color: #cbd5e1; }
+
+/* Due date field (label + DateTimeInput grouped together) */
+.due-date-field { display: flex; align-items: center; gap: 6px; }
+.dt-label { font-size: 0.85rem; color: #cbd5e1; white-space: nowrap; }
+
+.dt-input-wrapper { display: flex; flex-direction: column; gap: 4px; }
+.dt-input { display: flex; align-items: center; gap: 3px; }
+.dt-input span { color: #94a3b8; font-size: 0.85rem; }
+
+/* Smaller, compact day/month/hour/minute and year fields.
+   Two classes on these selectors (.dt-input + .dt-num/.dt-year) give them
+   higher specificity than ".panel-row input" / ".edit-row input", so they
+   override the default large input sizing used elsewhere in the app. */
+.dt-input input.dt-num,
+.dt-input input.dt-year {
+  flex: none;
+  min-width: 0;
+  padding: 4px 3px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+  text-align: center;
+  font-size: 0.82rem;
+}
+.dt-input input.dt-num { width: 28px; }
+.dt-input input.dt-year { width: 46px; }
+
+.dt-input.invalid input { border-color: #c0392b; }
+.dt-error { color: #c0392b; font-size: 0.85rem; margin: 0; display: flex; align-items: center; gap: 6px; }
+.badge.invalid { background: #c0392b; color: #fff; }
+
+/* Disabled state for Add task / Save buttons when the due date is invalid */
+.panel-row button:disabled,
+.edit-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
 @media (max-width: 820px) {
   .tasks li { grid-template-columns: 1fr; }
   .summary { text-align: left; }

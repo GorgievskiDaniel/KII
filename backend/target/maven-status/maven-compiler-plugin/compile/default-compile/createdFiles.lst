@@ -1,0 +1,8 @@
+com\gorgievskidaniel\kii\configuration\DockerSecretsProcessor.class
+com\gorgievskidaniel\kii\repository\GreetingRepository.class
+com\gorgievskidaniel\kii\controllers\HomeController.class
+com\gorgievskidaniel\kii\controllers\TaskController.class
+com\gorgievskidaniel\kii\Application.class
+com\gorgievskidaniel\kii\entity\Task.class
+com\gorgievskidaniel\kii\entity\Greeting.class
+com\gorgievskidaniel\kii\repository\TaskRepository.class
